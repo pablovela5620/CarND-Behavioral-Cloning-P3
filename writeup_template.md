@@ -1,8 +1,8 @@
-#**Behavioral Cloning** 
+**Behavioral Cloning**
 
-##Writeup Template
+## Writeup Template
 
-###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
+### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
 
 ---
 
@@ -18,112 +18,197 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
+[image1]: ./data/IMG/center_2016_12_01_13_30_48_287.jpg
+[image2]: ./data/IMG/left_2016_12_01_13_30_48_287.jpg
+[image3]: ./data/IMG/right_2016_12_01_13_30_48_287.jpg
+[image4]: ./examples/histrograph.png
 [image5]: ./examples/placeholder_small.png "Recovery Image"
 [image6]: ./examples/placeholder_small.png "Normal Image"
 [image7]: ./examples/placeholder_small.png "Flipped Image"
 
 ## Rubric Points
-###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
+Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.
 
 ---
-###Files Submitted & Code Quality
+### Files Submitted & Code Quality
 
-####1. Submission includes all required files and can be used to run the simulator in autonomous mode
+#### 1. Submission includes all required files and can be used to run the simulator in autonomous mode
 
 My project includes the following files:
 * model.py containing the script to create and train the model
+* helper_functions.py for data augmentation and preprocessing
 * drive.py for driving the car in autonomous mode
 * model.h5 containing a trained convolution neural network 
 * writeup_report.md or writeup_report.pdf summarizing the results
 
-####2. Submission includes functional code
+#### 2. Submission includes functional code
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
 ```sh
 python drive.py model.h5
 ```
 
-####3. Submission code is usable and readable
+#### 3. Submission code is usable and readable
 
 The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
+The helper_functions.py file contains the code for data augmentation and preprocessing as well as the generator
 
-###Model Architecture and Training Strategy
+### Model Architecture and Training Strategy
 
-####1. An appropriate model architecture has been employed
+#### 1. An appropriate model architecture has been employed
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
+My model consists of a deep convolution neural network based on NVIDIA's end to end Deep learning model
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+The model includes ELU activation function to introduce nonlinearity , and the data is normalized in the model using a Keras lambda layer
 
-####2. Attempts to reduce overfitting in the model
+#### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
+The model contains dropout layers in order to reduce overfitting.
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+The model was trained and validated on different data sets to ensure that the model was not overfitting . The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
-####3. Model parameter tuning
+#### 3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+The model used an adam optimizer, so the learning rate was not tuned manually.
 
-####4. Appropriate training data
+#### 4. Appropriate training data
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+Training data was chosen to keep the vehicle driving on the road.
 
 For details about how I created the training data, see the next section. 
 
-###Model Architecture and Training Strategy
+### Model Architecture and Training Strategy
 
-####1. Solution Design Approach
+#### 1. Solution Design Approach
 
-The overall strategy for deriving a model architecture was to ...
+The overall strategy for deriving a model architecture was first to start with a very simple network which was just a single flatten layer
+to a fully connected layer with a single output. This was done to ensure that the model could properly interact with the simulator and drive the car
 
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+Once I had managed to get the simulator working and the model trained I moved on to a much more powerful network, one that I based of
+NVIDIA's end to end Deep learning for self driving cars.
 
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
+Once NVIDIA's architecture was implemented, I modified the model slightly by adding in a lambda layer in the beginning of the model to normalize the images
+during training. I also added dropout layers to avoid overfitting.
 
-To combat the overfitting, I modified the model so that ...
+The data that was collected was split into training and validation data to gauge the models performance.
 
-Then I ... 
 
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
+The final step was to run the simulator to see how well the car was driving around track one. One major issue was the car would fall into the lake after the first turn past the red markings.
+To improve the driving behavior in these cases, I completely removed some of the data under a certain steering angle threshold
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
-####2. Final Model Architecture
+#### 2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
+The final model architecture can be seen below
 
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
+| Layer (type)            |Output Shape      |Connected to     |
+|-------------------------|------------------|-----------------|
+|lambda_1 (Lambda)        |(None, 66, 200, 3)|input            |
+|conv2d_1 (Conv2D)        |(None, 31, 98, 24)|lambda_1         |
+|conv2d_2 (Conv2D)        |(None, 14, 47, 36)|conv2d_1         |
+|conv2d_3 (Conv2D)        |(None, 5, 22, 48) |conv2d_2         |
+|conv2d_4 (Conv2D)        |(None, 3, 20, 64) |conv2d_3         |
+|conv2d_5 (Conv2D)        |(None, 1, 18, 64) |conv2d_4         |
+|flatten_1 (Flatten)      |(None, 1152)      |conv2d_5         |
+|dense_1 (Dense)          |(None, 100)       |flatten_1        |
+|dropout_1 (Dropout)      |(None, 100)       |dense_1          |
+|dense_2 (Dense)          |(None, 50)        |dropout_1        |
+|dropout_2 (Dropout)      |(None, 50)        |dense_2          |
+|dense_3 (Dense)          |(None, 10)        |dropout_2        |
+|dropout_3 (Dropout)      |(None, 10)        |dense_3          |
+|dense_4 (Dense)          |(None, 1)         |dropout_3        |
 
-![alt text][image1]
 
-####3. Creation of the Training Set & Training Process
 
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
+#### 3. Creation of the Training Set & Training Process
 
-![alt text][image2]
+At the start of the project recording my own data caused alot of struggles so I decided to use the Udacity data set that was released.
+Below you can see examples of the left, center, and right driving images:
 
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
 
-![alt text][image3]
+![alt text][image2] ![alt text][image1] ![alt text][image3]
+
+Using these images, I performed augmentations to help the model generalize.
+
+First I began with a simply randomly choosing between the left, center and right images
+
+```python
+def img_choice(X_sample, y_sample):
+    '''
+    :param X_sample:
+    :param y_sample:
+    :return:
+    '''
+    rand_int = np.random.randint(0, 3)
+    if rand_int == 0:
+        img = load_img(X_sample[0])  # Center Image
+        angle = y_sample
+        return img, angle
+    elif rand_int == 1:
+        img = load_img(X_sample[1])  # Left Image
+        angle = y_sample + 0.25
+        return img, angle
+    else:
+        img = load_img(X_sample[2])  # Right Image
+        angle = y_sample - 0.25
+        return img, angle
+```
+
+Because the left and right images are slightly off-center their steering angles had to be slightly adjusted by a static constant of 0.25
+
+Following this, a histogram of the steering angles was made to try and see what kind of data is being used.
+
 ![alt text][image4]
-![alt text][image5]
 
-Then I repeated this process on track two in order to get more data points.
+From the above image it can be seen that the data is biased towards a zero steering angle. Due to this I decided to use a threshold angle and completely ignore any data below this angle
 
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
+```python
+if abs(angle < 0.1):
+    return None, None
+```
 
-![alt text][image6]
-![alt text][image7]
+This helped the model during turns on the track.
 
-Etc ....
+I continued by randomly flipping the images and adjusting their respective steering angle:
 
-After the collection process, I had X number of data points. I then preprocessed this data by ...
+```python
+def img_flip(img, angle):
+    '''
+    randomly decides to flip image to augment data, angle is accordingly modified with image flip
+    '''
+    rand_int = np.random.randint(0, 2)
+    if rand_int == 0:
+        img = np.fliplr(img)
+        angle = -angle
+        return img, angle
+    else:
+        return img, angle
+```
 
 
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
+The last augmentation I performed on the data set involved randomly changing the brightness in the image.
+This is done to help generalize the model for data in differing lighting conditions
 
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+```python
+def img_change_brightness(img):
+    '''
+    Random brightness changes
+    '''
+    # HSV (Hue, Saturation, Value)
+    convt_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    brightness = 0.25 + np.random.uniform()
+    # Value is the brightness of the image
+    convt_img[:, :, 2] = convt_img[:, :, 2] * brightness
+    # Converted back to rgb
+    new_img = cv2.cvtColor(convt_img, cv2.COLOR_HSV2RGB)
+    return new_img
+```
+
+
+Once all the data had been augmented, I proceeded to pre process the data by cropping the top and bottom to remove
+unnecessary pixels that only show the track background and the car. After cropping the image is resized to (66,200,3) as done in the NVIDIA model
+
+
+
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 3 as evidenced by increasing
+ validation loss at higher epochs. I used an adam optimizer so that manually training the learning rate wasn't necessary.

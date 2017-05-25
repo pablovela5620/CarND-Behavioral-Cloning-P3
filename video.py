@@ -1,5 +1,7 @@
 from moviepy.editor import ImageSequenceClip
 import argparse
+import imageio
+
 
 
 def main():
