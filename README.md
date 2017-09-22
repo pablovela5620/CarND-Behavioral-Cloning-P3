@@ -27,10 +27,7 @@ The goals / steps of this project are the following:
 [image1]: ./examples/center_2016_12_01_13_30_48_287.jpg
 [image2]: ./examples/left_2016_12_01_13_30_48_287.jpg
 [image3]: ./examples/right_2016_12_01_13_30_48_287.jpg
-[image4]: ./examples/histrograph.png
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
+[image4]: ./examples/histograph.jpg
 
 ## Rubric Points
 Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.
@@ -163,7 +160,7 @@ Because the left and right images are slightly off-center their steering angles 
 
 Following this, a histogram of the steering angles was made to try and see what kind of data is being used.
 
-![alt text][image4]
+![Histogram][image4]
 
 From the above image it can be seen that the data is biased towards a zero steering angle. Due to this I decided to use a threshold angle and completely ignore any data below this angle
 
