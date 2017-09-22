@@ -24,9 +24,9 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./data/IMG/center_2016_12_01_13_30_48_287.jpg
-[image2]: ./data/IMG/left_2016_12_01_13_30_48_287.jpg
-[image3]: ./data/IMG/right_2016_12_01_13_30_48_287.jpg
+[image1]: ./examples/center_2016_12_01_13_30_48_287.jpg
+[image2]: ./examples/left_2016_12_01_13_30_48_287.jpg
+[image3]: ./examples/right_2016_12_01_13_30_48_287.jpg
 [image4]: ./examples/histrograph.png
 [image5]: ./examples/placeholder_small.png "Recovery Image"
 [image6]: ./examples/placeholder_small.png "Normal Image"
@@ -131,7 +131,7 @@ At the start of the project recording my own data caused alot of struggles so I 
 Below you can see examples of the left, center, and right driving images:
 
 
-![alt text][image2] ![alt text][image1] ![alt text][image3]
+![Left Image][image2] ![Center Image][image1] ![Right Image][image3]
 
 Using these images, I performed augmentations to help the model generalize.
 
